@@ -1,9 +1,17 @@
+import { useEffect } from 'react';
 import logo from '../assets/logo.png';
-import {Outlet, Link} from 'react-router-dom'
+import {Outlet, Link, useNavigate} from 'react-router-dom'
 
 
 const Header = () => {
 
+    const auth = localStorage.getItem('user');
+    const navigate = useNavigate();
+
+    const logout =() =>{
+        localStorage.clear();
+        navigate('/signup')
+    }
   
     return (
         <>
@@ -27,12 +35,22 @@ const Header = () => {
                         <li>
                             <Link to='/contacts' className="block py-2 pl-3 pr-4 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-blue-500 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700">Contacts</Link>
                         </li>
-                        <li>
+                        {
+                            auth ?
+                                <li>
+                                    <Link onClick={logout} to='/signup' className="block py-2 pl-3 pr-4 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-blue-500 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700">Logout</Link>
+                                </li>
+                            :
+                            <>
+                            <li>
                             <Link to='/signup' className="block py-2 pl-3 pr-4 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-blue-500 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700">Sign Up</Link>
-                        </li>
-                        <li>
-                            <Link to='/login' className="block py-2 pl-3 pr-4 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-blue-500 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700">Login</Link>
-                        </li>
+                            </li>
+                            <li>
+                                <Link to='/login' className="block py-2 pl-3 pr-4 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-blue-500 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700">Login</Link>
+                            </li>
+                            </>
+                        }
+                        
                         
                     </ul>
                 </div>

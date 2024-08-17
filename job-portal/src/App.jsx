@@ -8,6 +8,8 @@ import Jobs from './component/Jobs';
 import Contacts from './component/Contacts';
 import SignUp from './component/SignUp';
 import Login from './component/Login';
+import AddNewJobs from './component/AddNewJobs';
+import ProtectedRoute from './component/ProtectedRoute';
 
 import './App.css'
 
@@ -21,10 +23,13 @@ function App() {
       <BrowserRouter>
       <Header/>
         <Routes>
+            <Route element={<ProtectedRoute/>}>
+              <Route path='/addnewjobs' element={<AddNewJobs/>}/>
+            </Route>
             <Route exact path='/' element={<Content/>} />
-            <Route path='/company' element={<Company/>} />
-            <Route path='/jobs' element={<Jobs/>} />
-            <Route path='/contacts' element={<Contacts/>} />
+              <Route path='/company' element={<Company/>} />
+              <Route path='/jobs' element={<Jobs/>} />
+              <Route path='/contacts' element={<Contacts/>} />
             <Route path='/signup' element={<SignUp/>} />
             <Route path='/login' element={<Login/>} />
         </Routes>
