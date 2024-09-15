@@ -1,67 +1,113 @@
 import React, { useState } from 'react';
-import JobDetail from './JobDetail';
-
-const jobsData = [
-  { id: 1, title: 'Software Engineer', company: 'Google', location: 'Mountain View, CA', description: 'Develop and maintain web applications.' },
-  { id: 2, title: 'Data Scientist', company: 'Facebook', location: 'Menlo Park, CA', description: 'Analyze and interpret complex data sets.' },
-  { id: 3, title: 'Product Manager', company: 'Apple', location: 'Cupertino, CA', description: 'Lead product development teams.' },
-  // Add more job data here
-];
 
 const AddNewJobs = () =>{
-  const [searchTerm, setSearchTerm] = useState('');
-  const [jobs, setJobs] = useState(jobsData);
-  const [selectedJob, setSelectedJob] = useState(null);
+  const [formData, setFormData] = useState({
+    id: '',
+    title: '',
+    company: '',
+    location:'',
+    description:''
+  });
 
-  const handleSearch = (event) => {
-    const value = event.target.value.toLowerCase();
-    setSearchTerm(value);
-    setJobs(
-      jobsData.filter((job) =>
-        job.title.toLowerCase().includes(value) ||
-        job.company.toLowerCase().includes(value) ||
-        job.location.toLowerCase().includes(value)
-      )
-    );
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
   };
 
-  const handleDetailClick = (job) => {
-    setSelectedJob(job);
-  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log("formData ",JSON.stringify(formData))
+    let result = await fetch('http://localhost:3000/api/addnewjobs',{
+      method:'post',
+      body:JSON.stringify(formData),
+      headers:{
+        'Content-Type':'application/json'
+      },
+    });
+    result = await result.json();
+    console.log('result ',result)
+    if(result) {
+      alert(result.msg);
+      setFormData({
+        id: '',
+        title: '',
+        company: '',
+        location:'',
+        description:''
+      })
+    }
+  }
 
-  const handleCloseDetail = () => {
-    setSelectedJob(null);
-  };
-    return (
-        <>
-      <section className="bg-white dark:bg-gray-900">
-        <div className="w-9/12 mx-auto p-4 py-40">
-      <h1 className="text-2xl font-bold mb-4">Job Search</h1>
-       <input
-        type="text"
-        value={searchTerm}
-        onChange={handleSearch}
-        placeholder="Search for jobs"
-        className="w-full p-2 border border-gray-300 rounded mb-4"
-      />
-      <div>
-        {jobs.map((job) => (
-          <div key={job.id} className="p-4 mb-4 border border-gray-200 rounded shadow-sm">
-            <h2 className="text-xl font-semibold">{job.title}</h2>
-            <p>{job.company}</p>
-            <p>{job.location}</p>
-            <button onClick={() => handleDetailClick(job)} className="bg-blue-500 text-white px-4 py-2 rounded mt-2">
-              Detail
-            </button>
+ 
+  return (
+    <div className="flex justify-center items-center min-h-screen bg-gray-100 py-36">
+      <div className="w-2/3 p-8 space-y-6 bg-white shadow-lg rounded-md">
+        <h2 className="text-2xl font-bold text-center">Create New Job</h2>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label className="block mb-1 text-gray-600">Job Id</label>
+            <input
+              type="text"
+              name="id"
+              value={formData.id}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
           </div>
-        ))}
+          <div>
+            <label className="block mb-1 text-gray-600">Job Title</label>
+            <input
+              type="text"
+              name="title"
+              value={formData.title}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+          </div>
+          <div>
+            <label className="block mb-1 text-gray-600">Company Name</label>
+            <input
+              type="text"
+              name="company"
+              value={formData.company}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+          </div>
+          <div>
+            <label className="block mb-1 text-gray-600">Location</label>
+            <input
+              type="text"
+              name="location"
+              value={formData.location}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+          </div>
+          <div>
+            <label className="block mb-1 text-gray-600">Description</label>
+            <textarea
+              type="text"
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+          </div>
+          
+          <button
+            type="submit"
+            className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          >
+            Create
+          </button>
+        </form>
       </div>
-      {selectedJob && <JobDetail job={selectedJob} onClose={handleCloseDetail} />}
     </div>
-
-      </section>
-        </>
-    )
+  );
 }
 
 export default AddNewJobs;

@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config')
 const UserInfo = require('./models/userSchema');
+const AddJobs = require('./models/jobSchema');
 
 connectDB();
 const app = express();
@@ -22,12 +23,12 @@ app.get('/', (req, res) => {
 
 app.post('/api/signup',async (req,res) =>{
   let user = new UserInfo(req.body)
-  console.log('user ',user)
   let result = await user.save();
   result = result.toObject();
   delete result.password
-  res.status(201).send({'success':"user added succesfully!.."});
-  res.send(req.body);
+  result.success ="user added succesfully!.." // add newKey value pair
+  res.status(201).send(result);
+  // res.send(req.body);
   return;
 })
 
@@ -45,6 +46,22 @@ app.post('/api/login',async (req,res)=>{
     res.send({error:'User name or Password not to be blanck'})
   }
   
+})
+
+app.post('/api/addnewjobs',async (req,res)=>{
+  let jobs = new AddJobs(req.body);
+  let data = await jobs.save();
+  res.status(201).send({"msg":"new job added successfully"})
+})
+
+app.get('/api/getjoblist',async (req,res)=>{
+let jobList = await AddJobs.find();
+if(jobList.length > 0){
+  res.send(jobList)
+}
+else{
+  res.send({"result":"no job found"})
+}
 })
 
 app.listen(process.env.PORT, () => {

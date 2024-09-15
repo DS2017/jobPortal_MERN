@@ -18,7 +18,7 @@ const SignUp = () => {
         if(auth){
             navigate('/')
         }
-    })
+    },[])
 
 
   const handleChange = (e) => {

@@ -1,23 +1,29 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import JobDetail from './JobDetail';
 
-const jobsData = [
-  { id: 1, title: 'Software Engineer', company: 'Google', location: 'Mountain View, CA', description: 'Develop and maintain web applications.' },
-  { id: 2, title: 'Data Scientist', company: 'Facebook', location: 'Menlo Park, CA', description: 'Analyze and interpret complex data sets.' },
-  { id: 3, title: 'Product Manager', company: 'Apple', location: 'Cupertino, CA', description: 'Lead product development teams.' },
-  // Add more job data here
-];
 
 const Jobs = () =>{
   const [searchTerm, setSearchTerm] = useState('');
-  const [jobs, setJobs] = useState(jobsData);
+  const [jobs, setJobs] = useState([]);
   const [selectedJob, setSelectedJob] = useState(null);
+  const [jobist, setJobList] = useState([])
+
+  useEffect(()=>{
+    const fetchData = async () =>{
+      let list = await fetch('http://localhost:3000/api/getjoblist');
+    list = await list.json()
+    console.log('list ',list)
+    setJobList(list);
+    setJobs(list)
+    }
+    fetchData();
+  },[]);
 
   const handleSearch = (event) => {
     const value = event.target.value.toLowerCase();
     setSearchTerm(value);
     setJobs(
-      jobsData.filter((job) =>
+      jobist.filter((job) =>
         job.title.toLowerCase().includes(value) ||
         job.company.toLowerCase().includes(value) ||
         job.location.toLowerCase().includes(value)
